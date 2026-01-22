@@ -195,8 +195,8 @@
           Welcome to First Gear Driving Centre — log in to begin your journey toward test success!
         </div>
         <div class="muted">Please login with your admission credentials</div>
-        <input id="user_id" type="text" placeholder="Enter your First Gear ID" />
-        <input id="password" type="password" placeholder="Enter your DOB in ddmmyyyy" />
+        <input id="user_id" type="text" placeholder="Enter User ID" />
+        <input id="password" type="password" placeholder="Enter Password" />
         <button id="login-btn" class="btn">Login</button>
         <div id="login-msg" class="msg" style="color:#d9534f"></div>
       </div>
@@ -280,7 +280,7 @@
   </div>
 
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbwzEmJ2A5sgibYrg08n_qvBs2f37pF5xQFZikBsrKqkNLHoS4LXNh4Vx2-SCEKFprKL/exec"; // your Apps Script
+const scriptURL = null; // your Apps Script
 const LOGO = "https://lh3.googleusercontent.com/d/1PuhGrFKDbdXg2xJPMSiAY7G9VqVi582O";
 const tests = [
         {
@@ -1120,29 +1120,31 @@ const $ = id => document.getElementById(id);
 const show = id => { if (typeof id === 'string') $(id).style.display = ''; else id.style.display = ''; }
 const hide = id => { if (typeof id === 'string') $(id).style.display = 'none'; else id.style.display = 'none'; }
 
-$('login-btn').addEventListener('click', async ()=>{
+// 🔴 CHANGED: Hard-coded login (NO Google Sheet / NO Apps Script)
+const VALID_USER = "Firstgear";
+const VALID_PASS = "Student";
+
+$('login-btn').addEventListener('click', ()=>{
   const uid = $('user_id').value.trim();
   const pwd = $('password').value.trim();
   const msg = $('login-msg');
+
   msg.textContent = '';
-  if(!uid || !pwd){ msg.textContent = 'Please enter both fields.'; return; }
-  msg.style.color = '#333'; msg.textContent = 'Checking...';
-  try {
-    const resp = await fetch(scriptURL, {method:'POST', body: new URLSearchParams({user_id: uid, password: pwd})});
-    const data = await resp.json();
-    if(data && data.status === 'success'){
-      currentUser = { id: uid, name: data.name || uid };
-      enterDashboard();
-    } else {
-      msg.style.color = '#d9534f';
-      msg.textContent = 'You are not registered, Please register with us.';
-    }
-  } catch (e) {
-    msg.style.color = '#d9534f';
-    msg.textContent = 'Error connecting to server.';
-    console.error(e);
+  msg.style.color = '#d9534f';
+
+  if(!uid || !pwd){
+    msg.textContent = 'Please enter both fields.';
+    return;
+  }
+
+  if(uid === VALID_USER && pwd === VALID_PASS){
+    currentUser = { id: uid, name: "First Gear Student" };
+    enterDashboard();
+  } else {
+    msg.textContent = 'Invalid User ID or Password';
   }
 });
+
 
 function enterDashboard(){
   hide('login-screen'); show('dashboard-screen');
@@ -1443,4 +1445,5 @@ window.$ = $;
 </script>
 </body>
 </html>
+
 
